@@ -60,20 +60,20 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
         print(f"--------nfet:{nfet_bias} pfet:{pfet_bias}-----------")
         # Filter the data to only include rows with the desired nfet bias and pfet bias values
         filtered_data = data[(data['nfet_bias'] == nfet_bias) & (data['pfet_bias'] == pfet_bias)]
-        print("----filtered data----")
+        #print("----filtered data----")
         
         filtered_data = filtered_data.sort_values(by='supply_voltage')
-        print(filtered_data)
-        print("filt_data",len(filtered_data))
-        print("filtered_data['supply_voltage']",len(filtered_data['supply_voltage']))
+        #print(filtered_data)
+        #print("filt_data",len(filtered_data))
+        #print("filtered_data['supply_voltage']",len(filtered_data['supply_voltage']))
 
         # Get the clock period for the current bias pair from the frequency data
         freq_row = freq_data[(freq_data['nfet_bias'] == nfet_bias) & (freq_data['pfet_bias'] == pfet_bias)]
-        print("----freq row data----")
+        #print("----freq row data----")
         
         freq_row = freq_row.sort_values(by='supply_voltage')
-        print(freq_row)
-        print("freq_row",len(freq_row))
+        #print(freq_row)
+        #print("freq_row",len(freq_row))
 
         clock_period = freq_row['Clock Period (ns)']
         freq_mhz = freq_row['Frequency (Mhz)']
@@ -82,11 +82,11 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
         total_power = filtered_data['Total Power']
         total_leakage_energy = leakage_power.values * cycles * 10e-9 * clock_period.values
         total_dynamic_energy = dynamic_power.values * cycles * 10e-9 * clock_period.values
-        print("tot_dynamic_energy:",len(total_dynamic_energy))
-        print("tot_leakage_energy:",len(total_leakage_energy))
-        print("dynamic_power:",len(dynamic_power))
-        print("leakage_power:",len(leakage_power))
-        print("clock_pd:",len(clock_period))
+        #print("tot_dynamic_energy:",len(total_dynamic_energy))
+        #print("tot_leakage_energy:",len(total_leakage_energy))
+        #print("dynamic_power:",len(dynamic_power))
+        #print("leakage_power:",len(leakage_power))
+        #print("clock_pd:",len(clock_period))
         total_energy = total_power.values * cycles * 10e-9 * clock_period.values
         #print(dynamic_power)
         new_row = pd.DataFrame({'supply_voltage': filtered_data['supply_voltage'].values,
@@ -108,7 +108,7 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
         ax[1].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_leakage_energy,'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
         ax[2].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_energy,'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
         marker_idx +=1
-        print(f"----------------------------------")
+        #print(f"----------------------------------")
         #ax.scatter(filtered_data['supply_voltage'].values[:, np.newaxis], filtered_data['Frequency (Mhz)'].values[:, np.newaxis],label=f"NFET Bias: {nfet_bias}, PFET Bias: {pfet_bias}")
     # Save the new DataFrame to a CSV file
     new_data.to_csv(CONSOLIDATED_CSV, index=False)
