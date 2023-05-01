@@ -12,7 +12,7 @@ def plot_max_freq(path):
     data = pd.read_csv(path)
     # Get the unique nfet and pfet bias pairs in the data
     bias_pairs = data[['nfet_bias', 'pfet_bias']].drop_duplicates()
-    print(bias_pairs)
+    #print(bias_pairs)
     fig, ax = plt.subplots(figsize=(25, 12))
     # Loop through each bias pair and plot the corresponding data
     marker_idx = 0
@@ -44,7 +44,7 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
     freq_data = pd.read_csv(freq_csv_path)
     # Get the unique nfet and pfet bias pairs in the data
     bias_pairs = data[['nfet_bias', 'pfet_bias']].drop_duplicates()
-    print(bias_pairs)
+    #print(bias_pairs)
     fig, ax = plt.subplots(3,1,figsize=(40, 40))
     # Loop through each bias pair and plot the corresponding data
 
@@ -57,22 +57,38 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
     for index, bias_pair in bias_pairs.iterrows():
         nfet_bias = bias_pair['nfet_bias']
         pfet_bias = bias_pair['pfet_bias']
-
+        print(f"--------nfet:{nfet_bias} pfet:{pfet_bias}-----------")
         # Filter the data to only include rows with the desired nfet bias and pfet bias values
         filtered_data = data[(data['nfet_bias'] == nfet_bias) & (data['pfet_bias'] == pfet_bias)]
+        print("----filtered data----")
+        
         filtered_data = filtered_data.sort_values(by='supply_voltage')
+        print(filtered_data)
+        print("filt_data",len(filtered_data))
+        print("filtered_data['supply_voltage']",len(filtered_data['supply_voltage']))
 
         # Get the clock period for the current bias pair from the frequency data
-        freq_row = freq_data[(freq_data['nfet_bias'] == nfet_bias) & (freq_data['pfet_bias'] == pfet_bias)].iloc[0]
+        freq_row = freq_data[(freq_data['nfet_bias'] == nfet_bias) & (freq_data['pfet_bias'] == pfet_bias)]
+        print("----freq row data----")
+        
+        freq_row = freq_row.sort_values(by='supply_voltage')
+        print(freq_row)
+        print("freq_row",len(freq_row))
+
         clock_period = freq_row['Clock Period (ns)']
         freq_mhz = freq_row['Frequency (Mhz)']
         dynamic_power = filtered_data['Net Switching Power'] + filtered_data['Cell Internal Power']
         leakage_power = filtered_data['Cell Leakage Power']
         total_power = filtered_data['Total Power']
-        total_leakage_energy = leakage_power * cycles * 10e-9 * clock_period
-        total_dynamic_energy = dynamic_power * cycles * 10e-9 * clock_period
-        total_energy = total_power * cycles * 10e-9 * clock_period
-        print(total_dynamic_energy)
+        total_leakage_energy = leakage_power.values * cycles * 10e-9 * clock_period.values
+        total_dynamic_energy = dynamic_power.values * cycles * 10e-9 * clock_period.values
+        print("tot_dynamic_energy:",len(total_dynamic_energy))
+        print("tot_leakage_energy:",len(total_leakage_energy))
+        print("dynamic_power:",len(dynamic_power))
+        print("leakage_power:",len(leakage_power))
+        print("clock_pd:",len(clock_period))
+        total_energy = total_power.values * cycles * 10e-9 * clock_period.values
+        #print(dynamic_power)
         new_row = pd.DataFrame({'supply_voltage': filtered_data['supply_voltage'].values,
                                 'nfet_bias': nfet_bias,
                                 'pfet_bias': pfet_bias,
@@ -81,17 +97,18 @@ def plot_energy(freq_csv_path,power_csv_path,cycles):
                                 'total dynamic power': dynamic_power.values,
                                 'leakage power':leakage_power.values,
                                 'total power':total_power.values,
-                                'total dynamic energy': total_dynamic_energy.values,
-                                'leakage energy': total_leakage_energy.values,
-                                'total energy': total_energy.values
+                                'total dynamic energy': total_dynamic_energy,
+                                'leakage energy': total_leakage_energy,
+                                'total energy': total_energy
 
                                 })
         new_data = pd.concat([new_data,new_row],ignore_index=True)
         # Create a line plot of supply voltage vs frequency for the filtered data
-        ax[0].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_dynamic_energy.values[:, np.newaxis],'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
-        ax[1].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_leakage_energy.values[:, np.newaxis],'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
-        ax[2].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_energy.values[:, np.newaxis],'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
+        ax[0].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_dynamic_energy,'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
+        ax[1].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_leakage_energy,'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
+        ax[2].plot(filtered_data['supply_voltage'].values[:, np.newaxis], total_energy,'-'+markers[marker_idx%len(markers)],label=f"Bias-NFET: {nfet_bias}, PFET: {pfet_bias}")
         marker_idx +=1
+        print(f"----------------------------------")
         #ax.scatter(filtered_data['supply_voltage'].values[:, np.newaxis], filtered_data['Frequency (Mhz)'].values[:, np.newaxis],label=f"NFET Bias: {nfet_bias}, PFET Bias: {pfet_bias}")
     # Save the new DataFrame to a CSV file
     new_data.to_csv(CONSOLIDATED_CSV, index=False)
