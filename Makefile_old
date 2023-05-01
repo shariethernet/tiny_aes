@@ -1,0 +1,20 @@
+TARGETS := 	synth
+SP_TARGETS := power
+G_SP_TARGETS := gate_power
+
+SIM_TARGET := sim
+G_SIM_TARGET := gate_sim
+
+
+SELECTED_TARGETS := $(G_SP_TARGETS)
+
+all: $(SELECTED_TARGETS)
+RUN_DIR := /home/local/nu/shg/tiny_aes/runs_e/
+
+$(SELECTED_TARGETS):
+	fusesoc run --target=$@ --build-root=$(addprefix $(RUN_DIR),$(addprefix run_,$@)) aes
+
+.PHONY: run
+
+run:
+	fusesoc run --target=$(CURRENT_TARGET) --build-root=$(addprefix $(RUN_DIR),$(addprefix run_,$(CURRENT_TARGET))) aes

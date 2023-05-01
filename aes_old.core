@@ -1,0 +1,192 @@
+CAPI=2:
+name : ::aes:0
+filesets:    
+    libs:
+        files:
+            - rtl/round.v
+            - rtl/table.v
+        file_type: verilogSource
+
+    rtl_aes_128:
+        files:
+            - rtl/aes_128.v
+        file_type: verilogSource
+    
+    gate_level_128:
+        files:
+            - /home/local/nu/shg/tiny_aes/runs/run_synth/synth-design_compiler/netlist/aes_128.v
+            - /home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/verilog/GF22FDX6P75T_104CPP.all.v
+        file_type: verilogSource
+
+    rtl_aes_192:
+        files:
+            - rtl/aes_192.v
+        file_type: verilogSource
+
+    rtl_aes_256:
+        files:
+            - rtl/aes_256.v
+        file_type: verilogSource
+
+    tb_aes_128:
+        files:
+            - testbench/test_aes_128.v
+        file_type: verilogSource
+    
+    tb_aes_128_extended:
+        files:
+            - testbench/test_aes_128_extended.v
+        file_type: verilogSource
+        
+    tb_aes_192:
+        files:
+            - testbench/test_aes_192.v
+        file_type: verilogSource
+
+    tb_aes_256:
+        files:
+            - testbench/test_aes_256.v
+        file_type: verilogSource
+
+    waves_rtl:
+        files:
+            - /home/local/nu/shg/tiny_aes/runs_e/run_sim/sim-vcs/wave_dump_rtl.vcd
+        file_type: vcd
+
+    waves_gate:
+        files:
+            - /home/local/nu/shg/tiny_aes/runs_e/run_gate_sim/gate_sim-vcs/wave_dump_gls.vcd
+        file_type: vcd
+
+targets:
+  
+    synth:
+        default_tool : design_compiler
+        filesets: [rtl_aes_128,libs]
+        toplevel : [aes_128]
+        tools:
+          design_compiler: 
+            script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            dc_script:  "synth_128.tcl"
+            report_dir: "report"
+            jobs: 16
+            target_library: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            libs: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+
+    o_power:
+        filesets: [rtl_aes_128,libs,waves_gate]
+        toplevel : [aes_128]
+        flow: dc_pp
+        flow_options:
+            script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            dc_script:  "synth_128.tcl"
+            report_dir: "report"
+            jobs: 1
+            target_library: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            libs: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            mode: "time_based"
+            pp_script_dir: "/home/local/nu/shg/edalize_primepower_example/scripts"
+            lib_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db"
+            verilog_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/verilog"
+            pp_script: "commands_2.tcl"
+            vcd_strip_path: "test_aes_128/uut"
+            netlistpath: "netlist"
+            netlistname: "aes_128"
+            indir_source: "true"
+
+    power_gate:
+        filesets: [rtl_aes_128,libs,waves_gate]
+        toplevel : [aes_128]
+        flow: dc_pp
+        flow_options:
+            script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            dc_script:  "synth_128.tcl"
+            report_dir: "report"
+            jobs: 1
+            target_library: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            libs: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            mode: "time_based"
+            pp_script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            lib_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db"
+            verilog_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/verilog"
+            pp_script: "pp_gls.tcl"
+            vcd_strip_path: "test_aes_128/uut"
+            netlistpath: "netlist"
+            netlistname: "aes_128"
+            indir_source: "true"
+    
+    power_rtl:
+        filesets: [rtl_aes_128,libs,waves_rtl]
+        toplevel : [aes_128]
+        flow: dc_pp
+        flow_options:
+            script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            dc_script:  "synth_128.tcl"
+            report_dir: "report"
+            jobs: 1
+            target_library: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            libs: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            mode: "time_based"
+            pp_script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            lib_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db"
+            verilog_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/verilog"
+            pp_script: "pp_rtl.tcl"
+            vcd_strip_path: "test_aes_128/uut"
+            netlistpath: "netlist"
+            netlistname: "aes_128"
+            indir_source: "true"
+    
+    sim:
+        default_tool: vcs
+        filesets: [rtl_aes_128,libs, tb_aes_128_extended]
+        toplevel: [test_aes_128]
+        tools:
+            vcs:
+                vcs_options:
+                    - "+vc"
+                    - "-debug_access+all"
+                    - "-timescale=1ns/1ps"
+                    - "-race=all"
+                run_options:
+                    - "+vcs+dumpfile+wave_dump.vcd"
+    
+    gate_sim:
+        default_tool: vcs
+        filesets: [gate_level_128,tb_aes_128_extended]
+        toplevel: [test_aes_128]
+        tools:
+            vcs:
+                vcs_options:
+                    - "+vc"
+                    - "-debug_access+all"
+                    - "-timescale=1ns/1ps"
+                    - "-race=all"
+                run_options:
+                    - "+vcs+dumpfile+wave_dump.vcd"
+    
+    g_power:
+        filesets: [gate_level_128,waves_rtl]
+        toplevel : [aes_128]
+        flow: dc_pp
+        flow_options:
+            script_dir: "/home/local/nu/shg/tiny_aes/constraints"
+            dc_script:  "synth_128.tcl"
+            report_dir: "report"
+            jobs: 1
+            target_library: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            libs: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db/GF22FDX_6P75T_104CPP_TT_0P50V_0P00V_0P00V_M0P25V_25C.db"
+            mode: "time_based"
+            pp_script_dir: "/home/local/nu/shg/edalize_primepower_example/scripts"
+            lib_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/timing/db"
+            verilog_dir: "/home/local/nu/shg/pdk/lib/GF22FDX_6P75T_104CPP/rel_04182023_GF22FDX_6P75T_104CPP_0v09_ut/GF22FDX_6P75T_104CPP/0v09_ut/verilog"
+            pp_script: "commands_2.tcl"
+            vcd_strip_path: "test_aes_128/uut"
+            netlistpath: "netlist"
+            netlistname: "aes_128"
+            indir_source: "true"
+
+
+
+        
+
+
