@@ -3,3 +3,5 @@ run*
 *.csv
 data
 tiny_aes_builds
+build/
+waves/
